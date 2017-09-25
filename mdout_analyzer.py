@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from tkFileDialog import askopenfilenames
-from Tkinter import Tk, BOTH
+from tkinter.filedialog import askopenfilenames
+from tkinter import Tk, BOTH
 import matplotlib
 matplotlib.use('TkAgg')
 try:
@@ -11,11 +11,11 @@ try:
     from mdoutanalyzer.toplevel_app import MdoutAnalyzerApp
 except ImportError:
     import os
-    amberhome = os.getenv('AMBERHOME') or '$AMBERHOME'
-    raise ImportError('Could not import Amber Python modules. Please make sure '
-                      'you have sourced %s/amber.sh (if you are using sh/ksh/'
-                      'bash/zsh) or %s/amber.csh (if you are using csh/tcsh)' %
-                      (amberhome, amberhome))
+    #amberhome = os.getenv('AMBERHOME') or '$AMBERHOME'
+    #raise ImportError('Could not import Amber Python modules. Please make sure '
+    #                  'you have sourced %s/amber.sh (if you are using sh/ksh/'
+    #                  'bash/zsh) or %s/amber.csh (if you are using csh/tcsh)' %
+    #                 (amberhome, amberhome))
 from optparse import OptionParser
 import re
 import sys

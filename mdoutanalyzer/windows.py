@@ -2,8 +2,8 @@
 Has classes for various windows
 """
 
-from __future__ import division
-from Tkinter import *
+
+from tkinter import *
 
 class TextWindow(Toplevel):
    """ A basic, scrollable text window that can either be editable or not """
@@ -94,8 +94,8 @@ class TextWindow(Toplevel):
 
    def saveastext(self, event=None):
       """ Offer to save this to a new file """
-      from tkFileDialog import asksaveasfilename
-      from tkMessageBox import showwarning
+      from tkinter.filedialog import asksaveasfilename
+      from tkinter.messagebox import showwarning
 
       fname = asksaveasfilename(parent=self, title='Save Text to File', 
                                 defaultextension='.txt')
@@ -120,7 +120,7 @@ class TextWindow(Toplevel):
 
    def destroy(self):
       """ See if we want to save before closing """
-      from tkMessageBox import askyesno
+      from tkinter.messagebox import askyesno
       if not self.safe_close: 
          Toplevel.destroy(self)
          return

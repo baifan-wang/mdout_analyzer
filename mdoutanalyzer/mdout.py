@@ -11,7 +11,7 @@ It does NOT do:
 try:
    from mdoutanalyzer.dataset import DataSet
 except ImportError:
-   from dataset import DataSet
+   from .dataset import DataSet
 import numpy as np
 import os
 import re
@@ -44,7 +44,7 @@ class AmberMdout(object):
       self.data = {}           # Dict that matches mdout term names to arrays
       self.properties = {}     # List of input variables with their values
       self.get_properties()    # Get properties of output file
-      keys = self.properties.keys()
+      keys = list(self.properties.keys())
       # Figure out if we're a minimization or an MD
       if 'imin' in keys:
          self.is_md = self.properties['imin'] == 0 # This is MD iff imin == 0
@@ -60,7 +60,7 @@ class AmberMdout(object):
          self.is_restart = False
 
       # Determine how many steps we've done
-      if (self.is_min and 'maxcyc' in keys)or(self.is_md and 'nstlim' in keys):
+      if (self.is_min and 'maxcyc' in keys) or (self.is_md and 'nstlim' in keys):
          if self.is_min:
             self.num_steps = max(self.properties['maxcyc'], 1)
          if self.is_md:
@@ -220,7 +220,8 @@ class AmberMdout(object):
                         try:
                            self.data[term].add_value(float(term_val))
                         except KeyError:
-                           self.data[term] = np.zeros(self.num_terms).view(DataSet)
+                           self.data[term] = np.zeros(int(self.num_terms)).view(DataSet)
+                           ######## modified origin code by adding 'int' to self.num_terms
                            self.data[term].add_value(float(term_val))
                         except Exception as err:
                            n_omitted += 1
@@ -251,10 +252,10 @@ class AmberMdout(object):
       # size of each data array). In cases where we didn't know how many terms
       # to start with, or when simulations didn't finish, we resize/reshape the
       # arrays to remove extra zeros
-      for key in self.data.keys():
+      for key in list(self.data.keys()):
          self.data[key] = self.data[key].truncate()
          # Update the number of terms and the number of steps
-      self.num_terms = len(self.data[self.data.keys()[0]])
+      self.num_terms = len(self.data[list(self.data.keys())[0]])
       if 'ntpr' in self.properties: 
          self.num_steps = self.num_terms * self.properties['ntpr']
       
@@ -268,7 +269,7 @@ class AmberMdout(object):
    def __iadd__(self, other):
       """ In-place addition -- concatenate data from one mdout to another """
       # Compare the keys to make sure they're the same
-      selfkeys, otherkeys = self.data.keys(), other.data.keys()
+      selfkeys, otherkeys = list(self.data.keys()), list(other.data.keys())
       selfkeys.sort()
       otherkeys.sort()
       # Find out how many terms we have (it's not always num_terms...)
@@ -363,39 +364,39 @@ if __name__ == '__main__':
    if opt.check: sys.stdout = open('__mdoutcheck__', 'w')
 
    my_mdout = AmberMdout(opt.mdout)
-   longest_option = max([len(it) for it in my_mdout.properties.keys()])
-   print 'Testing get_properties() (Check with mdout file)'
-   print '-'*longest_option + '------------'
-   for prop in my_mdout.properties.keys():
-      print '  %%%ds | %%s' % longest_option % (prop, my_mdout.properties[prop])
+   longest_option = max([len(it) for it in list(my_mdout.properties.keys())])
+   print( 'Testing get_properties() (Check with mdout file)')
+   print(( '-'*longest_option + '------------'))
+   for prop in list(my_mdout.properties.keys()):
+      print(( '  %%%ds | %%s' % longest_option % (prop, my_mdout.properties[prop])))
 
-   print ''
+   print( '')
    if my_mdout.is_md:
-      print 'This mdout file is a MOLECULAR DYNAMICS calculation'
+      print( 'This mdout file is a MOLECULAR DYNAMICS calculation')
    if my_mdout.is_min:
-      print 'This mdout file is a MINIMIZATION calculation'
+      print( 'This mdout file is a MINIMIZATION calculation')
    if my_mdout.is_restart:
-      print 'This mdout file is from a RESTARTED simulation'
+      print( 'This mdout file is from a RESTARTED simulation')
    if not my_mdout.is_restart:
-      print 'This mdout file is NOT a restarted simulation'
+      print( 'This mdout file is NOT a restarted simulation')
 
-   print 'Testing get_data()'
-   print 'Found data keys:', ', '.join(my_mdout.data.keys())
-   print 'Averages of each are:'
-   keys = my_mdout.data.keys()
+   print( 'Testing get_data()')
+   print(( 'Found data keys:', ', '.join(list(my_mdout.data.keys()))))
+   print( 'Averages of each are:')
+   keys = list(my_mdout.data.keys())
    keys.sort()
    for key in keys:
-      print '   %10s : %15.4f' % (key, np.average(my_mdout.data[key]))
+      print(( '   %10s : %15.4f' % (key, np.average(my_mdout.data[key]))))
 
    # Test the in-place addition
    if opt.mdout2:
-      print 'Testing __iadd__:'
+      print( 'Testing __iadd__:')
       my_mdout += AmberMdout(opt.mdout2)
 
       for key in keys:
-         print '   %10s : %15.4f' % (key, np.average(my_mdout.data[key]))
+         print(( '   %10s : %15.4f' % (key, np.average(my_mdout.data[key]))))
 
-   print '\nDone testing.'
+   print( '\nDone testing.')
 
    # Close our stdout if we opened something in its place
    if sys.stdout != sys.__stdout__: sys.stdout.close()
@@ -407,7 +408,7 @@ if __name__ == '__main__':
    # Next, open a diff process
    process = Popen(['diff', '__mdoutcheck__', opt.check])
    if process.wait():
-      print 'TEST FAILED'
+      print( 'TEST FAILED')
    else:
-      print 'TEST PASSED. yay'
+      print( 'TEST PASSED. yay')
       os.remove('__mdoutcheck__')

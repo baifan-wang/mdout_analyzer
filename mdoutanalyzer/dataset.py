@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Make sure all division is floating division
-from __future__ import division
+
 
 import numpy as np
 import math

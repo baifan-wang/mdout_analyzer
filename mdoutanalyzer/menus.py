@@ -1,6 +1,6 @@
-from Tkinter import *
-from tkFileDialog import askopenfilenames
-from mdout import AmberMdout
+from tkinter import *
+from tkinter.filedialog import askopenfilenames
+from .mdout import AmberMdout
 from mdoutanalyzer.graphproperties import GraphControlWindow
 
 class FileMenu(Menu):

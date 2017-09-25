@@ -1,4 +1,4 @@
-from Tkinter import *
+from tkinter import *
 from mdoutanalyzer.widgets import (DataButton, GraphButton, SaveButton,
                                    StatButton, HistButton, AutoCorrButton,
                                    RunningAvgButton, CumulativeAvgButton)

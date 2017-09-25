@@ -1,7 +1,7 @@
 """
 List of useful widgets we use here.
 """
-from __future__ import division
+
 
 from csv import writer
 import matplotlib.pyplot as plt
@@ -10,9 +10,9 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
 from mdoutanalyzer.constants import LABEL_DESC
 from mdoutanalyzer.windows import TextWindow
 import numpy as np
-from tkFileDialog import asksaveasfilename
-from tkMessageBox import showerror, showwarning, showinfo
-from Tkinter import *
+from tkinter.filedialog import asksaveasfilename
+from tkinter.messagebox import showerror, showwarning, showinfo
+from tkinter import *
 try:
    from scipy.stats import gaussian_kde
 except ImportError:
@@ -134,7 +134,7 @@ class _AnaButton(Button):
       self.datasets = datasets
       self.graph_props = graph_props
       self.activelist = activelist
-      self.keylist = self.datasets.keys()
+      self.keylist = list(self.datasets.keys())
       self.new_windows = []
 
    def destroy(self):
@@ -495,4 +495,4 @@ if __name__ == '__main__':
    ient = InputEntryWindow(root, myvar, 'Test!')
    root.mainloop()
 
-   print 'myvar == ', myvar.get()
+   print(('myvar == ', myvar.get()))

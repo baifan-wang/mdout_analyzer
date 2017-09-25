@@ -4,7 +4,7 @@ exposing those options
 """
 
 from mdoutanalyzer.widgets import LabeledEntry
-from Tkinter import *
+from tkinter import *
 
 class GraphProperties(object):
    """ Defines the graph properties """
